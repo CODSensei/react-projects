@@ -1,28 +1,39 @@
 import { useForm } from "react-hook-form";
+import { Autocomplete, Stack, TextField } from "@mui/material";
+import { schema, Schema } from "../types/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 function Users() {
   const {
     register,
     formState: { errors },
-    handleSubmit,
-  } = useForm<{ email: String }>({
-    mode: "onSubmit",
+  } = useForm<Schema>({
+    mode: "all",
+    resolver: zodResolver(schema),
   });
 
-  const submitHandler = () => {
-    console.log("submitted");
-  };
-
   return (
-    <form onSubmit={handleSubmit(submitHandler)}>
-      <input
-        {...register("email", {
-          required: { value: true, message: "required" },
-          minLength: { value: 10, message: "must be atleast 10 characters" },
-        })}
-        placeholder="Email"
+    <Stack sx={{ gap: 2 }}>
+      <TextField
+        {...register("name")}
+        label="Name"
+        error={!!errors.name}
+        helperText={errors.name?.message}
       />
-      <p>{errors.email?.message}</p>
-    </form>
+      <TextField
+        {...register("email")}
+        label="Email"
+        error={!!errors.email}
+        helperText={errors.email?.message}
+      />
+      <Autocomplete
+        options={[
+          { id: 1, label: "Texas" },
+          { id: 2, label: "Georgia" },
+          { id: 3, label: "California" },
+        ]}
+        renderInput={(params) => <TextField {...params} label="States" />}
+      />
+    </Stack>
   );
 }
 
